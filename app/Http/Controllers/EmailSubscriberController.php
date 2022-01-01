@@ -14,19 +14,9 @@ class EmailSubscriberController extends Controller
      */
     public function index()
     {
-        //
+        $emailSubscribers = EmailSubscriber::all();
+        return response()->json([$emailSubscribers], 200);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -35,7 +25,17 @@ class EmailSubscriberController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|unique:email_subscribers,email',
+            'is_subscribed' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 404);
+        }
+
+        EmailSubscriber::create($request->all());
+
+        return response()->json(['message' => 'Email subscribed successfully'], 201);
     }
 
     /**
@@ -46,18 +46,7 @@ class EmailSubscriberController extends Controller
      */
     public function show(EmailSubscriber $emailSubscriber)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\EmailSubscriber  $emailSubscriber
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(EmailSubscriber $emailSubscriber)
-    {
-        //
+        return response()->json([$emailSubscriber], 200);
     }
 
     /**
@@ -69,7 +58,17 @@ class EmailSubscriberController extends Controller
      */
     public function update(Request $request, EmailSubscriber $emailSubscriber)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|unique:email_subscribers,email',
+            'is_subscribed' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 404);
+        }
+
+        $emailSubscriber->update($request->all());
+
+        return response()->json(['message' => 'Subscription updated successfully'], 201);
     }
 
     /**
@@ -80,6 +79,8 @@ class EmailSubscriberController extends Controller
      */
     public function destroy(EmailSubscriber $emailSubscriber)
     {
-        //
+        $emailSubscriber->delete();
+        return response()->json(['message' => 'Subscription deleted successfully'], 201);
+
     }
 }

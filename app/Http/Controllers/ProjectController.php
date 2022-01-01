@@ -33,7 +33,7 @@ class ProjectController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,svg|max:2048',
         ]);
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json($validator->errors(), 404);
         }
 
         $input = $request->all();
@@ -70,12 +70,16 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
             'description' => 'required',
             'is_done' => 'required',
             'type' => ['required', new EnumValue(ProjectType::class)],
         ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 404);
+        }
 
         $input = $request->all();
         if ($image = $request->file('image')) {
@@ -88,7 +92,7 @@ class ProjectController extends Controller
         }
         $project->update($input);
 
-        return response()->json(['message' => 'project created successfully'], 201);
+        return response()->json(['message' => 'project updated successfully'], 201);
     }
 
     /**
