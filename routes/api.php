@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProjectController;
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,20 +21,25 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
+
 Route::group([
-    'middleware' => 'api',
+    'prefix' => 'projects'
+], function ($router) {
+    Route::get('/', [ProjectController::class, 'index']);
+    Route::get('/{project}', [ProjectController::class, 'show']);
+    Route::post('/', [ProjectController::class, 'store'])->middleware('jwt.verify');
+    Route::put('/', [ProjectController::class, 'update'])->middleware('jwt.verify');
+    Route::delete('/{project}', [ProjectController::class, 'destroy'])->middleware('jwt.verify');
+});
+
+
+Route::group([
     'prefix' => 'auth'
 ], function ($router) {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::post('/refresh', [AuthController::class, 'refresh']);
-    Route::get('/user-profile', [AuthController::class, 'userProfile']);
-});
-
-Route::group([
-    'middleware' => 'api'
-], function ($router){
-    Route::resource( 'projects' , ProjectController::class);
-
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware('jwt.verify');
+    Route::post('/refresh', [AuthController::class, 'refresh'])->middleware('jwt.verify');
+    Route::get('/user-profile', [AuthController::class, 'userProfile'])->middleware('jwt.verify');
 });
