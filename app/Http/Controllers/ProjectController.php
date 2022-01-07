@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Enums\ProjectType;
 use App\Models\Project;
-use App\Http\Requests\StoreProjectRequest;
-//use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Http\Request;
@@ -22,7 +20,7 @@ class ProjectController extends Controller
     public function index()
     {
         $projects = Project::all();
-        return response()->json(['projects' => $projects], 200);
+        return response()->json($projects, 200);
     }
 
     /**

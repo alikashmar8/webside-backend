@@ -6,8 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProjectController;
 
 use App\Http\Controllers\EmailSubscriberController;
-//use App\Http\Controllers\ProjectController;
-
+use App\Http\Controllers\UsersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,8 +25,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::group([
     'middleware' => 'api',
-]);
-Route::group([
     'prefix' => 'auth'
 ], function ($router) {
     Route::post('/login', [AuthController::class, 'login']);
@@ -64,8 +61,14 @@ Route::group([
     'prefix' => 'email-subscribers'
 ], function ($router) {
     Route::get('/', [EmailSubscriberController::class, 'index'])->middleware('jwt.verify');
-    Route::get('/{emailSubscriber}', [EmailSubscriberController::class, 'show'])->middleware('jwt.verify');;
+    Route::get('/{emailSubscriber}', [EmailSubscriberController::class, 'show'])->middleware('jwt.verify');
     Route::post('/', [EmailSubscriberController::class, 'store']);
     Route::put('/', [EmailSubscriberController::class, 'update'])->middleware('jwt.verify');
     Route::delete('/{emailSubscriber}', [EmailSubscriberController::class, 'destroy'])->middleware('jwt.verify');
+});
+
+Route::group([
+    'prefix' => 'users'
+], function ($router) {
+    Route::post('/send-contact-us-email', [UsersController::class, 'sendContactUsEmail']);
 });

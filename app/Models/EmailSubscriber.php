@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class EmailSubscriber extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['email', 'is_subscribed'];
 }

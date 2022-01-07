@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\EmailSubscriber;
 use Illuminate\Http\Request;
+use Validator;
 
 class EmailSubscriberController extends Controller
 {
@@ -25,11 +26,12 @@ class EmailSubscriberController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $messages = [
+            'email.unique' => 'Email already subscribed!',
+        ];
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|unique:email_subscribers,email',
-            'is_subscribed' => 'required',
-        ]);
+        ], $messages);
         if ($validator->fails()) {
             return response()->json($validator->errors(), 404);
         }
@@ -96,6 +98,5 @@ class EmailSubscriberController extends Controller
         //
         $emailSubscriber->delete();
         return response()->json(['message' => 'Subscription deleted successfully'], 201);
-
     }
 }
