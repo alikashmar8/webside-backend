@@ -3,12 +3,22 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Validator;
 
 class UsersController extends Controller
 {
     public function sendContactUsEmail(Request $request)
     {
-        \Mail::to('alikashmar8@gmail.com')->send(new \App\Mail\ContactUsEmail($request));
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'email' => 'required|email',
+            'subject' => 'required',
+            'message' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 404);
+        }
+        \Mail::to('alikashmar8@gmail.com')->send(new \App\Mail\ContactUsEmail($request->all()));
         return response()->json(['message' => 'Email sent successfully']);
     }
 }
