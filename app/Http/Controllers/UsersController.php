@@ -18,7 +18,7 @@ class UsersController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors(), 404);
         }
-        \Mail::to('alikashmar8@gmail.com')->send(new \App\Mail\ContactUsEmail($request->all()));
+        Mail::to('contact@webside.com.au')->send(new \App\Mail\ContactUsEmail($request->all()));
         return response()->json(['message' => 'Email sent successfully']);
     }
 }
